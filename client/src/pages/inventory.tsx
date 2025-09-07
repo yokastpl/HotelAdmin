@@ -75,7 +75,7 @@ export default function Inventory() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Package className="w-5 h-5 me-2" />
             Inventory Management
@@ -83,11 +83,11 @@ export default function Inventory() {
         </CardHeader>
         <CardContent className="p-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="text-center p-3 bg-primary text-white rounded">
+            <div className="text-center p-3 bg-blue-600 text-white rounded">
               <h5 className="text-xl font-bold" data-testid="text-total-items">{totalItems}</h5>
               <small>Total Items</small>
             </div>
-            <div className="text-center p-3 bg-success text-white rounded">
+            <div className="text-center p-3 bg-green-500 text-white rounded">
               <h5 className="text-xl font-bold" data-testid="text-total-value">₹{totalValue.toLocaleString()}</h5>
               <small>Stock Value</small>
             </div>
@@ -125,7 +125,7 @@ export default function Inventory() {
                       <div className="flex gap-1">
                         <Button 
                           size="sm" 
-                          className="bg-success text-white"
+                          className="bg-green-500 text-white"
                           onClick={() => handleStockUpdate(item, 'add')}
                           data-testid={`button-add-stock-${item.id}`}
                         >

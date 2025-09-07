@@ -134,7 +134,7 @@ export default function DailyInventory() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center">
               <Package className="w-5 h-5 me-2" />
@@ -159,19 +159,19 @@ export default function DailyInventory() {
 
           {/* Status Indicators */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-            <div className="text-center p-3 bg-info text-white rounded">
+            <div className="text-center p-3 bg-blue-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-total-items">
                 {inventory?.length || 0}
               </h6>
               <small>Total Items</small>
             </div>
-            <div className="text-center p-3 bg-success text-white rounded">
+            <div className="text-center p-3 bg-green-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-snapshots-count">
                 {dailySnapshots?.length || 0}
               </h6>
               <small>Snapshots</small>
             </div>
-            <div className="text-center p-3 bg-warning text-white rounded">
+            <div className="text-center p-3 bg-yellow-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-closed-count">
                 {dailySnapshots?.filter((s: any) => s.isClosed).length || 0}
               </h6>
@@ -183,21 +183,21 @@ export default function DailyInventory() {
           {!isHistoricalDate && (
             <div className="mb-4 space-y-2">
               {!hasSnapshots && (
-                <div className="text-center p-3 bg-info text-white rounded">
+                <div className="text-center p-3 bg-blue-500 text-white rounded">
                   <Calendar className="w-4 h-4 me-2" />
                   No inventory snapshots for this date. Create opening snapshots below.
                 </div>
               )}
               
               {hasSnapshots && !allClosed && (
-                <div className="text-center p-3 bg-warning text-white rounded">
+                <div className="text-center p-3 bg-yellow-500 text-white rounded">
                   <Unlock className="w-4 h-4 me-2" />
                   Some items need closing snapshots. Complete them below.
                 </div>
               )}
 
               {allClosed && (
-                <div className="text-center p-3 bg-success text-white rounded">
+                <div className="text-center p-3 bg-green-500 text-white rounded">
                   <CheckCircle className="w-4 h-4 me-2" />
                   All inventory snapshots completed for this date.
                 </div>
@@ -206,7 +206,7 @@ export default function DailyInventory() {
           )}
 
           {isHistoricalDate && (
-            <div className="text-center p-3 bg-info text-white rounded mb-4">
+            <div className="text-center p-3 bg-blue-500 text-white rounded mb-4">
               <Lock className="w-4 h-4 me-2" />
               Historical View - Read Only
             </div>
@@ -246,7 +246,7 @@ export default function DailyInventory() {
                               <>
                                 <Badge 
                                   variant="outline" 
-                                  className="text-info border-info"
+                                  className="text-blue-600 border-blue-600"
                                   data-testid={`badge-opening-stock-${item.id}`}
                                 >
                                   {snapshot.openingStock} opening
@@ -254,7 +254,7 @@ export default function DailyInventory() {
                                 {isClosed && (
                                   <Badge 
                                     variant="outline" 
-                                    className="text-success border-success"
+                                    className="text-green-600 border-green-600"
                                     data-testid={`badge-closing-stock-${item.id}`}
                                   >
                                     {snapshot.closingStock} closing
@@ -279,7 +279,7 @@ export default function DailyInventory() {
                               {!hasSnapshot ? (
                                 <Button 
                                   size="sm" 
-                                  className="bg-info text-white"
+                                  className="bg-blue-500 text-white"
                                   onClick={() => handleCreateSnapshot(item)}
                                   data-testid={`button-create-snapshot-${item.id}`}
                                 >
@@ -289,7 +289,7 @@ export default function DailyInventory() {
                               ) : !isClosed ? (
                                 <Button 
                                   size="sm" 
-                                  className="bg-warning text-white"
+                                  className="bg-yellow-500 text-white"
                                   onClick={() => handleCloseSnapshot(snapshot)}
                                   data-testid={`button-close-snapshot-${item.id}`}
                                 >

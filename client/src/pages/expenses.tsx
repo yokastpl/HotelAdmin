@@ -90,7 +90,7 @@ export default function Expenses() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Receipt className="w-5 h-5 me-2" />
             Add Expense
@@ -161,7 +161,7 @@ export default function Expenses() {
 
       {/* Today's Expenses */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <List className="w-5 h-5 me-2" />
             Today's Expenses

@@ -35,7 +35,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Zap className="w-5 h-5 mr-2" />
             Quick Actions
@@ -80,7 +80,7 @@ export default function Dashboard() {
       {/* Low Stock Alerts */}
       {lowStockItems.length > 0 && (
         <Card>
-          <CardHeader className="bg-warning text-dark">
+          <CardHeader className="bg-yellow-500 text-black">
             <CardTitle className="flex items-center">
               <AlertTriangle className="w-5 h-5 mr-2" />
               Low Stock Alerts
@@ -95,7 +95,7 @@ export default function Dashboard() {
                     <small>Current Stock: <span data-testid={`text-stock-${item.id}`}>{item.currentStock}</span> units</small>
                   </div>
                   <Link href="/inventory">
-                    <Button size="sm" variant="default" className="bg-warning text-dark" data-testid={`button-add-stock-${item.id}`}>
+                    <Button size="sm" variant="default" className="bg-yellow-500 text-black hover:bg-yellow-600" data-testid={`button-add-stock-${item.id}`}>
                       <Plus className="w-4 h-4 mr-1" />
                       Add Stock
                     </Button>

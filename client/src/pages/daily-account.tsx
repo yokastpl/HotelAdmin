@@ -150,7 +150,7 @@ export default function DailyAccount() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center">
               <TrendingUp className="w-5 h-5 me-2" />
@@ -175,38 +175,38 @@ export default function DailyAccount() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 mb-4">
-            <div className="text-center p-3 bg-secondary text-white rounded">
+            <div className="text-center p-3 bg-gray-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-opening-balance">
                 ₹{(dailyAccount?.openingBalance || 0).toLocaleString()}
               </h6>
               <small>Opening Balance</small>
             </div>
-            <div className="text-center p-3 bg-success text-white rounded">
+            <div className="text-center p-3 bg-green-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-total-sales">
                 ₹{(dailyAccount?.totalSales || 0).toLocaleString()}
               </h6>
               <small>Total Sales</small>
             </div>
-            <div className="text-center p-3 bg-destructive text-white rounded">
+            <div className="text-center p-3 bg-red-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-total-expenses">
                 ₹{(dailyAccount?.totalExpenses || 0).toLocaleString()}
               </h6>
               <small>Expenses</small>
             </div>
-            <div className="text-center p-3 bg-info text-white rounded">
+            <div className="text-center p-3 bg-blue-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-online-payments">
                 ₹{(dailyAccount?.totalOnlinePayments || 0).toLocaleString()}
               </h6>
               <small>Online</small>
             </div>
-            <div className="text-center p-3 bg-primary text-white rounded">
+            <div className="text-center p-3 bg-purple-500 text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-current-balance">
                 ₹{(dailyAccount?.currentBalance || 0).toLocaleString()}
               </h6>
               <small>Current Balance</small>
             </div>
             {isClosed && (
-              <div className="text-center p-3 bg-warning text-white rounded">
+              <div className="text-center p-3 bg-yellow-500 text-white rounded">
                 <h6 className="text-lg font-bold" data-testid="text-account-closing-balance">
                   ₹{(dailyAccount?.closingBalance || 0).toLocaleString()}
                 </h6>
@@ -323,7 +323,7 @@ export default function DailyAccount() {
                           </div>
                           <div className="text-end">
                             <strong 
-                              className={variance > 0 ? "text-success" : variance < 0 ? "text-destructive" : "text-muted"}
+                              className={variance > 0 ? "text-green-600" : variance < 0 ? "text-red-600" : "text-gray-500"}
                               data-testid={`text-breakdown-variance-${snapshot.id}`}
                             >
                               {variance > 0 ? '+' : ''}{variance}
@@ -403,7 +403,7 @@ export default function DailyAccount() {
 
                 <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="text-danger border-danger" data-testid="button-reset-daily">
+                    <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50" data-testid="button-reset-daily">
                       <RotateCcw className="w-4 h-4 me-2" />
                       Reset Today
                     </Button>
@@ -413,7 +413,7 @@ export default function DailyAccount() {
                       <DialogTitle>Reset Daily Data</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <p className="text-warning">
+                      <p className="text-yellow-600">
                         Are you sure you want to reset all today's transactions? This action cannot be undone.
                       </p>
                       <div className="d-flex gap-2">
@@ -436,14 +436,14 @@ export default function DailyAccount() {
             )}
 
             {isHistoricalDate && (
-              <div className="text-center p-3 bg-info text-white rounded">
+              <div className="text-center p-3 bg-blue-500 text-white rounded">
                 <Lock className="w-4 h-4 me-2" />
                 Historical View - Read Only
               </div>
             )}
 
             {isClosed && (
-              <div className="text-center p-3 bg-warning text-white rounded">
+              <div className="text-center p-3 bg-yellow-500 text-white rounded">
                 <Lock className="w-4 h-4 me-2" />
                 Day Closed - Read Only
               </div>

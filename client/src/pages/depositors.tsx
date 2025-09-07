@@ -139,7 +139,7 @@ export default function Depositors() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Building2 className="w-5 h-5 me-2" />
             Record Deposit
@@ -205,7 +205,7 @@ export default function Depositors() {
 
       {/* Deposits List */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Building2 className="w-5 h-5 me-2" />
             Current Deposits
@@ -238,7 +238,7 @@ export default function Depositors() {
                           <div className="mt-1 space-x-2">
                             <Badge 
                               variant={depositor.returned ? "secondary" : "default"} 
-                              className="bg-success text-white"
+                              className="bg-green-500 text-white"
                               data-testid={`badge-depositor-amount-${depositor.id}`}
                             >
                               ₹{parseFloat(depositor.amount).toFixed(2)} Deposited
@@ -254,7 +254,7 @@ export default function Depositors() {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                className="border-success text-success"
+                                className="border-green-500 text-green-600 hover:bg-green-50"
                                 onClick={() => handleReturn(depositor.id, remainingAmount)}
                                 data-testid={`button-return-deposit-${depositor.id}`}
                               >
@@ -269,7 +269,7 @@ export default function Depositors() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              className="text-danger border-danger"
+                              className="text-red-600 border-red-600 hover:bg-red-50"
                               onClick={() => handleDelete(depositor.id)}
                               disabled={deleteDepositorMutation.isPending}
                               data-testid={`button-delete-depositor-${depositor.id}`}

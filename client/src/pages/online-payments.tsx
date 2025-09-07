@@ -100,7 +100,7 @@ export default function OnlinePayments() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Smartphone className="w-5 h-5 me-2" />
             Record Online Payment
@@ -168,7 +168,7 @@ export default function OnlinePayments() {
 
       {/* Today's Online Payments */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <List className="w-5 h-5 me-2" />
             Today's Online Payments
@@ -204,13 +204,13 @@ export default function OnlinePayments() {
                   </div>
                   <div className="text-end">
                     <div className="d-flex align-items-center gap-2">
-                      <strong className="text-success" data-testid={`text-payment-amount-${payment.id}`}>
+                      <strong className="text-green-600" data-testid={`text-payment-amount-${payment.id}`}>
                         ₹{parseFloat(payment.amount).toFixed(2)}
                       </strong>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        className="text-danger border-danger"
+                        className="text-red-600 border-red-600 hover:bg-red-50"
                         onClick={() => handleDelete(payment.id)}
                         disabled={deletePaymentMutation.isPending}
                         data-testid={`button-delete-payment-${payment.id}`}

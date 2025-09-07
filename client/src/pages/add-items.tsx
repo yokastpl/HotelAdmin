@@ -91,7 +91,7 @@ export default function AddItems() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <PlusCircle className="w-5 h-5 me-2" />
             Add New Item
@@ -160,7 +160,7 @@ export default function AddItems() {
 
       {/* Items List */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <List className="w-5 h-5 me-2" />
             Current Items

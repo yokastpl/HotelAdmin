@@ -141,7 +141,7 @@ export default function Borrowers() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <UserPlus className="w-5 h-5 me-2" />
             Add Borrower
@@ -225,7 +225,7 @@ export default function Borrowers() {
 
       {/* Borrowers List */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Users className="w-5 h-5 me-2" />
             Current Borrowers
@@ -258,15 +258,15 @@ export default function Borrowers() {
                             </small>
                           )}
                           <div className="mt-1 space-x-2">
-                            <Badge variant="outline" className="text-warning border-warning" data-testid={`badge-borrower-outstanding-${borrower.id}`}>
+                            <Badge variant="outline" className="text-yellow-600 border-yellow-600" data-testid={`badge-borrower-outstanding-${borrower.id}`}>
                               ₹{outstanding.toFixed(2)} Current
                             </Badge>
                             {previousBalance > 0 && (
-                              <Badge variant="outline" className="text-info border-info" data-testid={`badge-borrower-previous-${borrower.id}`}>
+                              <Badge variant="outline" className="text-blue-600 border-blue-600" data-testid={`badge-borrower-previous-${borrower.id}`}>
                                 ₹{previousBalance.toFixed(2)} Previous
                               </Badge>
                             )}
-                            <Badge variant="outline" className="text-danger border-danger" data-testid={`badge-borrower-total-${borrower.id}`}>
+                            <Badge variant="outline" className="text-red-600 border-red-600" data-testid={`badge-borrower-total-${borrower.id}`}>
                               ₹{totalOutstanding.toFixed(2)} Total
                             </Badge>
                           </div>
@@ -275,7 +275,7 @@ export default function Borrowers() {
                           <div className="d-flex gap-2">
                             <Button 
                               size="sm" 
-                              className="bg-success text-white"
+                              className="bg-green-500 text-white hover:bg-green-600"
                               onClick={() => handleRepayment(borrower.id)}
                               disabled={outstanding <= 0}
                               data-testid={`button-repay-${borrower.id}`}
@@ -286,7 +286,7 @@ export default function Borrowers() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              className="text-danger border-danger"
+                              className="text-red-600 border-red-600 hover:bg-red-50"
                               onClick={() => handleDelete(borrower.id)}
                               disabled={deleteBorrowerMutation.isPending}
                               data-testid={`button-delete-borrower-${borrower.id}`}

@@ -18,14 +18,14 @@ const navItems = [
 ];
 
 const moreItems = [
-  { path: "/add-items", icon: PlusCircle, label: "Add Items", color: "text-primary" },
-  { path: "/expenses", icon: Receipt, label: "Expenses", color: "text-destructive" },
-  { path: "/borrowers", icon: Users, label: "Borrowers", color: "text-warning" },
-  { path: "/depositors", icon: Building2, label: "Depositors", color: "text-success" },
-  { path: "/online-payments", icon: Smartphone, label: "Online Payments", color: "text-info" },
-  { path: "/employees", icon: Users, label: "Employees", color: "text-secondary" },
-  { path: "/daily-inventory", icon: Calendar, label: "Daily Inventory", color: "text-info" },
-  { path: "/company-info", icon: Building2, label: "Company Info", color: "text-primary" },
+  { path: "/add-items", icon: PlusCircle, label: "Add Items", color: "text-blue-600" },
+  { path: "/expenses", icon: Receipt, label: "Expenses", color: "text-red-600" },
+  { path: "/borrowers", icon: Users, label: "Borrowers", color: "text-yellow-600" },
+  { path: "/depositors", icon: Building2, label: "Depositors", color: "text-green-600" },
+  { path: "/online-payments", icon: Smartphone, label: "Online Payments", color: "text-blue-600" },
+  { path: "/employees", icon: Users, label: "Employees", color: "text-gray-600" },
+  { path: "/daily-inventory", icon: Calendar, label: "Daily Inventory", color: "text-blue-600" },
+  { path: "/company-info", icon: Building2, label: "Company Info", color: "text-blue-600" },
 ];
 
 export default function BottomNavigation() {

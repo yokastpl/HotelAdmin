@@ -107,7 +107,7 @@ export default function CompanyInfo() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Building className="w-5 h-5 me-2" />
             Company Information
@@ -215,7 +215,7 @@ export default function CompanyInfo() {
 
       {/* Preview Card */}
       <Card>
-        <CardHeader className="bg-primary text-white">
+        <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="flex items-center">
             <Eye className="w-5 h-5 me-2" />
             Invoice Header Preview

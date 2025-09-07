@@ -12,7 +12,7 @@ export default function AppHeader() {
           <span className="font-bold text-primary">HotelMax</span>
         </Link>
         <div className="flex items-center">
-          <Badge variant="secondary" className="mr-2 bg-success text-white">
+          <Badge variant="secondary" className="mr-2 bg-green-500 text-white">
             <Wifi className="w-3 h-3 mr-1" />
             Online
           </Badge>
