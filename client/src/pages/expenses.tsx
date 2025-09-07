@@ -113,9 +113,10 @@ export default function Expenses() {
             
             <div>
               <Label htmlFor="expenseAmount">Amount *</Label>
-              <div className="input-group">
-                <span className="input-group-text">₹</span>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">₹</span>
                 <Input
+                  className="pl-8"
                   id="expenseAmount"
                   type="number"
                   placeholder="0.00"
