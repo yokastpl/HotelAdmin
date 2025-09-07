@@ -1,0 +1,244 @@
+# 📲 Full Stack Hotel Management Software – **Mobile-Optimized Web App**
+
+> Build a **mobile-optimized hotel management system** as a **web app** using:
+>
+> * **Frontend:** HTML5, CSS3 (with Bootstrap 5 or Tailwind CSS), JavaScript
+> * **Backend:** Node.js with Express
+> * **Database:** SQLite (preferred) or MySQL
+>
+> The app should be fully responsive and work smoothly on **mobile browsers** (360px to 768px width), with touch-friendly UI, clean layouts, and fast performance.
+>
+> It should include the following **10 fully functional modules**, connected via a consistent UI.
+
+---
+
+## 📋 Modules & Functionality (Detailed)
+
+---
+
+### 1️⃣ **Add Items (Inventory Setup)**
+
+> Allows adding items that are available in the hotel (food, stock, utilities).
+
+* Fields:
+
+  * Item Name
+  * Price per Unit
+* On submit: Save to DB.
+* List view: Items should be editable and deletable.
+* Items must be available for selection in Sales and Inventory modules.
+
+---
+
+### 2️⃣ **Inventory Module (NEW) ✅**
+
+> Real-time inventory management synced with sales and manual adjustments.
+
+* Show item-wise:
+
+  * Name, Price, Current Stock, Total Stock Value
+* Add Stock: Increase stock manually
+* Adjust Stock: Decrease or correct stock
+* Auto-deduct on sales
+* Low stock warning (e.g., if qty < 5)
+* Optional: Inventory history log
+
+---
+
+### 3️⃣ **Sales Module**
+
+> Allows entering daily sales based on existing items in inventory.
+
+* Fields:
+
+  * Item (dropdown from Inventory)
+  * Price (auto-filled)
+  * Quantity Sold
+  * Total = Price × Quantity
+* On sale:
+
+  * Deduct quantity from inventory
+  * Add to daily sales record
+* View sales by date
+* Optional: Add customer name
+
+---
+
+### 4️⃣ **Daily Account (Auto-Synced)**
+
+> Central accounting page that aggregates all daily transactions.
+
+* Show per day:
+
+  * Item-wise Sale Summary
+  * Opening Stock (auto from yesterday)
+  * Closing Stock (auto-calculated or manual)
+  * Sold Quantity
+  * Total Sales Amount
+  * Total Expenses
+  * Borrower Repayments (+)
+  * Depositor Withdrawals (–)
+  * Employee Payments (–)
+  * Online Payments (–)
+* All calculations auto-updated
+* Previous day's closing becomes today’s opening
+
+---
+
+### 5️⃣ **Expenses Module**
+
+* Fields:
+
+  * Expense Name / Description
+  * Amount
+  * Date
+* Show list by date
+* Deduct from Daily Account automatically
+
+---
+
+### 6️⃣ **Borrowers Module**
+
+* Fields:
+
+  * Borrower Name
+  * Image (optional)
+  * Amount Borrowed
+* When repaid:
+
+  * Update balance
+  * Credit shown in Daily Account
+* View borrower history
+
+---
+
+### 7️⃣ **Depositors Module**
+
+* Fields:
+
+  * Depositor Name
+  * Amount Deposited
+* When returned:
+
+  * Subtract from balance
+  * Shown in Daily Account
+* View all deposits by date
+
+---
+
+### 8️⃣ **Online Payments Module**
+
+* Field:
+
+  * Amount received online
+* Deduct from net sales (shown in Daily Account)
+* View by date
+
+---
+
+### 9️⃣ **Employee Module**
+
+* Fields:
+
+  * Name, Position
+  * Daily Pay
+  * Attendance (Present/Absent toggle)
+* Calculate monthly salary based on attendance
+* Support partial daily payments
+* Deduct salaries from Daily Account
+* View monthly payment history
+
+---
+
+### 🔟 **Company Info**
+
+* Add business name, contact, logo
+* Show in app header
+* Optional: printable invoices with branding
+
+---
+
+## 🧩 Database Models (Simplified Overview)
+
+```sql
+-- Items
+id | name | price_per_unit
+
+-- Inventory
+item_id | current_stock | last_updated
+
+-- Sales
+id | item_id | quantity | sale_total | date
+
+-- DailyAccount
+id | date | total_sales | total_expense | net_profit
+
+-- Expenses
+id | description | amount | date
+
+-- Borrowers
+id | name | image | amount_owed
+
+-- Depositors
+id | name | amount | returned_amount | date
+
+-- Employees
+id | name | daily_pay | present_today | payments
+
+-- OnlinePayments
+id | amount | date
+```
+
+---
+
+## 🖼️ UI/UX Requirements
+
+* Mobile-first layout (for phones and small tablets)
+* Use **Bootstrap 5** or **Tailwind CSS** (choose one)
+* Large buttons, clean inputs, responsive spacing
+* Use cards instead of tables on mobile
+* Navigation:
+
+  * Hamburger menu (or)
+  * Bottom navbar with icons: Home, Sales, Inventory, Account, Settings
+* Use **Toasts / Alerts** for success/error messages
+* Optional:
+
+  * Dark mode
+  * Print/export reports
+
+---
+
+## 📈 Optional Add-ons
+
+* Export data to Excel or CSV
+* Charts using Chart.js (e.g. sales trends, stock movement)
+* Admin login (basic auth)
+* PWA (Progressive Web App) support — Add to Home screen, offline access
+
+---
+
+## ✅ Final Module List
+
+| #  | Module          | Description                 |
+| -- | --------------- | --------------------------- |
+| 1  | Add Items       | Add items to inventory      |
+| 2  | Inventory       | Track current stock         |
+| 3  | Sales           | Enter daily item-wise sales |
+| 4  | Daily Account   | Central financial record    |
+| 5  | Expenses        | Track daily expenses        |
+| 6  | Borrowers       | Manage borrowed credit      |
+| 7  | Depositors      | Track deposits & returns    |
+| 8  | Online Payments | Record digital transactions |
+| 9  | Employees       | Attendance + salary         |
+| 10 | Company Info    | Hotel branding info         |
+
+---
+
+## 🔧 Expected Output on Replit
+
+* Web app that opens beautifully on a phone browser
+* Modular structure: Each module in separate route/component
+* Fully functional backend (Express + SQLite)
+* UI that is clean, touch-friendly, and intuitive
+* Real-time sync between Inventory, Sales, and Accounts
