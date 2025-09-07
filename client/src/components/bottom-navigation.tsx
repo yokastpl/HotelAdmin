@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 import { Home, ShoppingCart, Package, TrendingUp, MoreHorizontal } from "lucide-react";
 import {
   Sheet,
@@ -30,6 +31,11 @@ const moreItems = [
 
 export default function BottomNavigation() {
   const [location] = useLocation();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleNavigation = (path: string) => {
+    setIsSheetOpen(false);
+  };
 
   return (
     <nav className="bottom-nav">
@@ -46,7 +52,7 @@ export default function BottomNavigation() {
             </div>
           ))}
           <div className="nav-item">
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <div className="nav-link" data-testid="nav-more">
                   <MoreHorizontal className="w-6 h-6" />
@@ -59,7 +65,7 @@ export default function BottomNavigation() {
                 </SheetHeader>
                 <div className="grid grid-cols-1 gap-2 mt-4">
                   {moreItems.map((item) => (
-                    <Link key={item.path} href={item.path}>
+                    <Link key={item.path} href={item.path} onClick={() => handleNavigation(item.path)}>
                       <Button variant="ghost" className="w-full justify-start h-12" data-testid={`button-${item.label.toLowerCase().replace(/\s+/g, '-')}`}>
                         <item.icon className={`w-5 h-5 mr-3 ${item.color}`} />
                         {item.label}
