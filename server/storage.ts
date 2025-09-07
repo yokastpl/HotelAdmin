@@ -98,6 +98,7 @@ export class MemStorage implements IStorage {
     const item: Item = {
       ...insertItem,
       id,
+      category: insertItem.category || null,
       createdAt: new Date(),
     };
     this.items.set(id, item);
@@ -152,6 +153,7 @@ export class MemStorage implements IStorage {
     const inventory: Inventory = {
       ...insertInventory,
       id,
+      currentStock: insertInventory.currentStock || 0,
       lastUpdated: new Date(),
     };
     this.inventory.set(id, inventory);
@@ -201,6 +203,7 @@ export class MemStorage implements IStorage {
     const sale: Sale = {
       ...insertSale,
       id,
+      customerName: insertSale.customerName || null,
       date: new Date(),
     };
     this.sales.set(id, sale);
@@ -214,7 +217,7 @@ export class MemStorage implements IStorage {
   private async updateInventoryOnSale(itemId: string, quantity: number): Promise<void> {
     const inventory = await this.getInventoryByItemId(itemId);
     if (inventory) {
-      const newStock = Math.max(0, inventory.currentStock - quantity);
+      const newStock = Math.max(0, (inventory.currentStock || 0) - quantity);
       await this.updateInventory(itemId, newStock);
     }
   }
@@ -236,6 +239,7 @@ export class MemStorage implements IStorage {
     const expense: Expense = {
       ...insertExpense,
       id,
+      category: insertExpense.category || null,
       date: new Date(),
     };
     this.expenses.set(id, expense);
@@ -256,6 +260,7 @@ export class MemStorage implements IStorage {
     const borrower: Borrower = {
       ...insertBorrower,
       id,
+      phone: insertBorrower.phone || null,
       amountRepaid: "0",
       createdAt: new Date(),
     };
@@ -286,6 +291,7 @@ export class MemStorage implements IStorage {
     const depositor: Depositor = {
       ...insertDepositor,
       id,
+      purpose: insertDepositor.purpose || null,
       returned: false,
       returnedAmount: "0",
       date: new Date(),
@@ -324,6 +330,7 @@ export class MemStorage implements IStorage {
     const payment: OnlinePayment = {
       ...insertPayment,
       id,
+      transactionRef: insertPayment.transactionRef || null,
       date: new Date(),
     };
     this.onlinePayments.set(id, payment);
@@ -340,6 +347,7 @@ export class MemStorage implements IStorage {
     const employee: Employee = {
       ...insertEmployee,
       id,
+      position: insertEmployee.position || null,
       createdAt: new Date(),
     };
     this.employees.set(id, employee);
@@ -367,6 +375,7 @@ export class MemStorage implements IStorage {
     const attendance: Attendance = {
       ...insertAttendance,
       id,
+      present: insertAttendance.present !== undefined ? insertAttendance.present : true,
       date: new Date(),
     };
     this.attendance.set(id, attendance);
@@ -428,6 +437,11 @@ export class MemStorage implements IStorage {
       this.companyInfo = {
         ...insertInfo,
         id,
+        address: insertInfo.address || null,
+        phone: insertInfo.phone || null,
+        email: insertInfo.email || null,
+        gstNumber: insertInfo.gstNumber || null,
+        logo: insertInfo.logo || null,
         updatedAt: new Date(),
       };
     }
