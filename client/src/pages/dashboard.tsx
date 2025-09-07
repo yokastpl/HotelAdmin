@@ -7,7 +7,7 @@ import DashboardStats from "@/components/dashboard-stats";
 import { api } from "@/lib/api";
 import { 
   ShoppingCart, Package, Receipt, TrendingUp, 
-  AlertTriangle, Plus, Zap 
+  AlertTriangle, Plus, Zap, Calendar 
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -65,6 +65,12 @@ export default function Dashboard() {
               <Button variant="outline" className="w-full h-20 flex-col" data-testid="button-view-reports">
                 <TrendingUp className="w-6 h-6 mb-1" />
                 <small>View Reports</small>
+              </Button>
+            </Link>
+            <Link href="/daily-inventory">
+              <Button variant="outline" className="w-full h-20 flex-col" data-testid="button-daily-inventory">
+                <Calendar className="w-6 h-6 mb-1" />
+                <small>Daily Inventory</small>
               </Button>
             </Link>
           </div>

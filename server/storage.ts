@@ -9,7 +9,10 @@ import {
   type Employee, type InsertEmployee,
   type Attendance, type InsertAttendance,
   type SalaryPayment, type InsertSalaryPayment,
-  type CompanyInfo, type InsertCompanyInfo
+  type CompanyInfo, type InsertCompanyInfo,
+  type DailyBalance, type InsertDailyBalance,
+  type DailyInventorySnapshot, type InsertDailyInventorySnapshot,
+  type TransactionLog, type InsertTransactionLog
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -69,6 +72,28 @@ export interface IStorage {
   // Company Info
   getCompanyInfo(): Promise<CompanyInfo | undefined>;
   createOrUpdateCompanyInfo(info: InsertCompanyInfo): Promise<CompanyInfo>;
+
+  // Daily Balances
+  getDailyBalance(date: string): Promise<DailyBalance | undefined>;
+  createOrUpdateDailyBalance(balance: InsertDailyBalance): Promise<DailyBalance>;
+  closeDailyBalance(date: string, closingBalance: number): Promise<DailyBalance | undefined>;
+
+  // Daily Inventory Snapshots
+  getDailyInventorySnapshots(date: string): Promise<(DailyInventorySnapshot & { item: Item })[]>;
+  createDailyInventorySnapshot(snapshot: InsertDailyInventorySnapshot): Promise<DailyInventorySnapshot>;
+  closeDailyInventorySnapshot(date: string, itemId: string, closingStock: number): Promise<DailyInventorySnapshot | undefined>;
+
+  // Transaction Logs
+  createTransactionLog(log: InsertTransactionLog): Promise<TransactionLog>;
+  getTransactionLogs(date?: string): Promise<TransactionLog[]>;
+
+  // Delete operations
+  deleteBorrower(id: string): Promise<boolean>;
+  deleteDepositor(id: string): Promise<boolean>;
+  deleteOnlinePayment(id: string): Promise<boolean>;
+
+  // Daily Reset
+  resetDailyData(date: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -83,6 +108,9 @@ export class MemStorage implements IStorage {
   private attendance: Map<string, Attendance> = new Map();
   private salaryPayments: Map<string, SalaryPayment> = new Map();
   private companyInfo: CompanyInfo | undefined;
+  private dailyBalances: Map<string, DailyBalance> = new Map();
+  private dailyInventorySnapshots: Map<string, DailyInventorySnapshot> = new Map();
+  private transactionLogs: Map<string, TransactionLog> = new Map();
 
   // Items
   async getItems(): Promise<Item[]> {
@@ -446,6 +474,186 @@ export class MemStorage implements IStorage {
       };
     }
     return this.companyInfo;
+  }
+
+  // Daily Balances
+  async getDailyBalance(date: string): Promise<DailyBalance | undefined> {
+    const targetDate = new Date(date).toDateString();
+    return Array.from(this.dailyBalances.values()).find(
+      balance => new Date(balance.date).toDateString() === targetDate
+    );
+  }
+
+  async createOrUpdateDailyBalance(insertBalance: InsertDailyBalance): Promise<DailyBalance> {
+    const targetDate = new Date(insertBalance.date).toDateString();
+    const existingBalance = Array.from(this.dailyBalances.values()).find(
+      balance => new Date(balance.date).toDateString() === targetDate
+    );
+
+    if (existingBalance) {
+      const updated = {
+        ...existingBalance,
+        ...insertBalance,
+        updatedAt: new Date(),
+      };
+      this.dailyBalances.set(existingBalance.id, updated);
+      return updated;
+    } else {
+      const id = randomUUID();
+      const balance: DailyBalance = {
+        ...insertBalance,
+        id,
+        isClosed: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      this.dailyBalances.set(id, balance);
+      return balance;
+    }
+  }
+
+  async closeDailyBalance(date: string, closingBalance: number): Promise<DailyBalance | undefined> {
+    const targetDate = new Date(date).toDateString();
+    const balance = Array.from(this.dailyBalances.values()).find(
+      b => new Date(b.date).toDateString() === targetDate
+    );
+
+    if (balance) {
+      const updated = {
+        ...balance,
+        closingBalance: closingBalance.toString(),
+        isClosed: true,
+        updatedAt: new Date(),
+      };
+      this.dailyBalances.set(balance.id, updated);
+      return updated;
+    }
+    return undefined;
+  }
+
+  // Daily Inventory Snapshots
+  async getDailyInventorySnapshots(date: string): Promise<(DailyInventorySnapshot & { item: Item })[]> {
+    const targetDate = new Date(date).toDateString();
+    const result: (DailyInventorySnapshot & { item: Item })[] = [];
+    
+    for (const snapshot of this.dailyInventorySnapshots.values()) {
+      if (new Date(snapshot.date).toDateString() === targetDate) {
+        const item = this.items.get(snapshot.itemId);
+        if (item) {
+          result.push({ ...snapshot, item });
+        }
+      }
+    }
+    return result;
+  }
+
+  async createDailyInventorySnapshot(insertSnapshot: InsertDailyInventorySnapshot): Promise<DailyInventorySnapshot> {
+    const id = randomUUID();
+    const snapshot: DailyInventorySnapshot = {
+      ...insertSnapshot,
+      id,
+      isClosed: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.dailyInventorySnapshots.set(id, snapshot);
+    return snapshot;
+  }
+
+  async closeDailyInventorySnapshot(date: string, itemId: string, closingStock: number): Promise<DailyInventorySnapshot | undefined> {
+    const targetDate = new Date(date).toDateString();
+    const snapshot = Array.from(this.dailyInventorySnapshots.values()).find(
+      s => new Date(s.date).toDateString() === targetDate && s.itemId === itemId
+    );
+
+    if (snapshot) {
+      const updated = {
+        ...snapshot,
+        closingStock,
+        isClosed: true,
+        updatedAt: new Date(),
+      };
+      this.dailyInventorySnapshots.set(snapshot.id, updated);
+      return updated;
+    }
+    return undefined;
+  }
+
+  // Transaction Logs
+  async createTransactionLog(insertLog: InsertTransactionLog): Promise<TransactionLog> {
+    const id = randomUUID();
+    const log: TransactionLog = {
+      ...insertLog,
+      id,
+      createdAt: new Date(),
+    };
+    this.transactionLogs.set(id, log);
+    return log;
+  }
+
+  async getTransactionLogs(date?: string): Promise<TransactionLog[]> {
+    if (date) {
+      const targetDate = new Date(date).toDateString();
+      return Array.from(this.transactionLogs.values()).filter(
+        log => new Date(log.date).toDateString() === targetDate
+      );
+    }
+    return Array.from(this.transactionLogs.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  // Delete operations
+  async deleteBorrower(id: string): Promise<boolean> {
+    return this.borrowers.delete(id);
+  }
+
+  async deleteDepositor(id: string): Promise<boolean> {
+    return this.depositors.delete(id);
+  }
+
+  async deleteOnlinePayment(id: string): Promise<boolean> {
+    return this.onlinePayments.delete(id);
+  }
+
+  // Daily Reset
+  async resetDailyData(date: string): Promise<boolean> {
+    const targetDate = new Date(date).toDateString();
+    
+    // Delete sales for the date
+    for (const [key, sale] of this.sales.entries()) {
+      if (new Date(sale.date!).toDateString() === targetDate) {
+        this.sales.delete(key);
+      }
+    }
+
+    // Delete expenses for the date
+    for (const [key, expense] of this.expenses.entries()) {
+      if (new Date(expense.date!).toDateString() === targetDate) {
+        this.expenses.delete(key);
+      }
+    }
+
+    // Delete online payments for the date
+    for (const [key, payment] of this.onlinePayments.entries()) {
+      if (new Date(payment.date!).toDateString() === targetDate) {
+        this.onlinePayments.delete(key);
+      }
+    }
+
+    // Reset daily balance
+    const balance = Array.from(this.dailyBalances.values()).find(
+      b => new Date(b.date).toDateString() === targetDate
+    );
+    if (balance) {
+      const resetBalance = {
+        ...balance,
+        closingBalance: null,
+        isClosed: false,
+        updatedAt: new Date(),
+      };
+      this.dailyBalances.set(balance.id, resetBalance);
+    }
+
+    return true;
   }
 }
 

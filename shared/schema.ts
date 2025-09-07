@@ -42,6 +42,7 @@ export const borrowers = pgTable("borrowers", {
   phone: text("phone"),
   amountBorrowed: decimal("amount_borrowed", { precision: 10, scale: 2 }).notNull(),
   amountRepaid: decimal("amount_repaid", { precision: 10, scale: 2 }).default("0"),
+  previousBalance: decimal("previous_balance", { precision: 10, scale: 2 }).default("0"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -98,6 +99,42 @@ export const companyInfo = pgTable("company_info", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Daily Balances table
+export const dailyBalances = pgTable("daily_balances", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: timestamp("date").notNull(),
+  openingBalance: decimal("opening_balance", { precision: 10, scale: 2 }).notNull().default("0"),
+  closingBalance: decimal("closing_balance", { precision: 10, scale: 2 }),
+  isClosed: boolean("is_closed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Daily Inventory Snapshots table
+export const dailyInventorySnapshots = pgTable("daily_inventory_snapshots", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: timestamp("date").notNull(),
+  itemId: varchar("item_id").references(() => items.id).notNull(),
+  openingStock: integer("opening_stock").notNull().default(0),
+  closingStock: integer("closing_stock"),
+  isClosed: boolean("is_closed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Transaction Log table for audit trail
+export const transactionLogs = pgTable("transaction_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: timestamp("date").notNull(),
+  transactionType: text("transaction_type").notNull(), // 'sale', 'expense', 'borrower', 'depositor', 'online_payment', 'inventory', 'balance'
+  transactionId: varchar("transaction_id").notNull(),
+  action: text("action").notNull(), // 'create', 'update', 'delete', 'repay', 'return', 'reset'
+  amount: decimal("amount", { precision: 10, scale: 2 }),
+  description: text("description"),
+  userId: varchar("user_id"), // For future user tracking
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertItemSchema = createInsertSchema(items).omit({ id: true, createdAt: true });
 export const insertInventorySchema = createInsertSchema(inventory).omit({ id: true, lastUpdated: true });
@@ -110,6 +147,9 @@ export const insertEmployeeSchema = createInsertSchema(employees).omit({ id: tru
 export const insertAttendanceSchema = createInsertSchema(attendance).omit({ id: true, date: true });
 export const insertSalaryPaymentSchema = createInsertSchema(salaryPayments).omit({ id: true, date: true });
 export const insertCompanyInfoSchema = createInsertSchema(companyInfo).omit({ id: true, updatedAt: true });
+export const insertDailyBalanceSchema = createInsertSchema(dailyBalances).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertDailyInventorySnapshotSchema = createInsertSchema(dailyInventorySnapshots).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertTransactionLogSchema = createInsertSchema(transactionLogs).omit({ id: true, createdAt: true });
 
 // Types
 export type Item = typeof items.$inferSelect;
@@ -134,3 +174,9 @@ export type SalaryPayment = typeof salaryPayments.$inferSelect;
 export type InsertSalaryPayment = z.infer<typeof insertSalaryPaymentSchema>;
 export type CompanyInfo = typeof companyInfo.$inferSelect;
 export type InsertCompanyInfo = z.infer<typeof insertCompanyInfoSchema>;
+export type DailyBalance = typeof dailyBalances.$inferSelect;
+export type InsertDailyBalance = z.infer<typeof insertDailyBalanceSchema>;
+export type DailyInventorySnapshot = typeof dailyInventorySnapshots.$inferSelect;
+export type InsertDailyInventorySnapshot = z.infer<typeof insertDailyInventorySnapshotSchema>;
+export type TransactionLog = typeof transactionLogs.$inferSelect;
+export type InsertTransactionLog = z.infer<typeof insertTransactionLogSchema>;

@@ -9,13 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { api } from "@/lib/api";
-import { UserPlus, Users, DollarSign } from "lucide-react";
+import { UserPlus, Users, DollarSign, Trash2 } from "lucide-react";
 
 export default function Borrowers() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     amountBorrowed: "",
+    previousBalance: "",
   });
   const [repaymentData, setRepaymentData] = useState({
     borrowerId: "",
@@ -35,7 +36,7 @@ export default function Borrowers() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/borrowers"] });
       queryClient.invalidateQueries({ queryKey: ["/api/daily-account"] });
-      setFormData({ name: "", phone: "", amountBorrowed: "" });
+      setFormData({ name: "", phone: "", amountBorrowed: "", previousBalance: "" });
       toast({
         title: "Success",
         description: "Borrower added successfully!",
@@ -72,6 +73,25 @@ export default function Borrowers() {
     },
   });
 
+  const deleteBorrowerMutation = useMutation({
+    mutationFn: (id: string) => api.deleteBorrower(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/borrowers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/daily-account"] });
+      toast({
+        title: "Success",
+        description: "Borrower deleted successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete borrower. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.amountBorrowed) {
@@ -87,6 +107,7 @@ export default function Borrowers() {
       name: formData.name,
       phone: formData.phone || null,
       amountBorrowed: formData.amountBorrowed,
+      previousBalance: formData.previousBalance || "0",
     });
   };
 
@@ -109,6 +130,12 @@ export default function Borrowers() {
       id: repaymentData.borrowerId,
       amount: parseFloat(repaymentData.amount),
     });
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this borrower? This action cannot be undone.")) {
+      deleteBorrowerMutation.mutate(id);
+    }
   };
 
   return (
@@ -151,6 +178,24 @@ export default function Borrowers() {
                   data-testid="input-borrower-amount"
                 />
               </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="previousBalance">Previous Balance (Before System)</Label>
+              <div className="input-group">
+                <span className="input-group-text">₹</span>
+                <Input
+                  id="previousBalance"
+                  type="number"
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0"
+                  value={formData.previousBalance}
+                  onChange={(e) => setFormData({ ...formData, previousBalance: e.target.value })}
+                  data-testid="input-previous-balance"
+                />
+              </div>
+              <small className="text-muted">This amount won't affect daily calculations until repaid</small>
             </div>
             
             <div>
@@ -197,6 +242,8 @@ export default function Borrowers() {
             <div className="space-y-3">
               {borrowers.map((borrower: any) => {
                 const outstanding = parseFloat(borrower.amountBorrowed) - parseFloat(borrower.amountRepaid || "0");
+                const previousBalance = parseFloat(borrower.previousBalance || "0");
+                const totalOutstanding = outstanding + previousBalance;
                 return (
                   <Card key={borrower.id} className="borrower-card">
                     <CardContent className="p-3">
@@ -210,23 +257,43 @@ export default function Borrowers() {
                               {borrower.phone}
                             </small>
                           )}
-                          <div className="mt-1">
+                          <div className="mt-1 space-x-2">
                             <Badge variant="outline" className="text-warning border-warning" data-testid={`badge-borrower-outstanding-${borrower.id}`}>
-                              ₹{outstanding.toFixed(2)} Outstanding
+                              ₹{outstanding.toFixed(2)} Current
+                            </Badge>
+                            {previousBalance > 0 && (
+                              <Badge variant="outline" className="text-info border-info" data-testid={`badge-borrower-previous-${borrower.id}`}>
+                                ₹{previousBalance.toFixed(2)} Previous
+                              </Badge>
+                            )}
+                            <Badge variant="outline" className="text-danger border-danger" data-testid={`badge-borrower-total-${borrower.id}`}>
+                              ₹{totalOutstanding.toFixed(2)} Total
                             </Badge>
                           </div>
                         </div>
                         <div className="text-end">
-                          <Button 
-                            size="sm" 
-                            className="bg-success text-white"
-                            onClick={() => handleRepayment(borrower.id)}
-                            disabled={outstanding <= 0}
-                            data-testid={`button-repay-${borrower.id}`}
-                          >
-                            <DollarSign className="w-4 h-4 me-1" />
-                            Repay
-                          </Button>
+                          <div className="d-flex gap-2">
+                            <Button 
+                              size="sm" 
+                              className="bg-success text-white"
+                              onClick={() => handleRepayment(borrower.id)}
+                              disabled={outstanding <= 0}
+                              data-testid={`button-repay-${borrower.id}`}
+                            >
+                              <DollarSign className="w-4 h-4 me-1" />
+                              Repay
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="text-danger border-danger"
+                              onClick={() => handleDelete(borrower.id)}
+                              disabled={deleteBorrowerMutation.isPending}
+                              data-testid={`button-delete-borrower-${borrower.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </CardContent>

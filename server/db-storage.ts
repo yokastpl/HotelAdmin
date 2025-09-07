@@ -10,8 +10,12 @@ import {
   type Attendance, type InsertAttendance,
   type SalaryPayment, type InsertSalaryPayment,
   type CompanyInfo, type InsertCompanyInfo,
+  type DailyBalance, type InsertDailyBalance,
+  type DailyInventorySnapshot, type InsertDailyInventorySnapshot,
+  type TransactionLog, type InsertTransactionLog,
   items, inventory, sales, expenses, borrowers, depositors, 
-  onlinePayments, employees, attendance, salaryPayments, companyInfo
+  onlinePayments, employees, attendance, salaryPayments, companyInfo,
+  dailyBalances, dailyInventorySnapshots, transactionLogs
 } from "@shared/schema";
 import { db } from "./database";
 import { eq, and, desc, gte, lt } from "drizzle-orm";
@@ -311,6 +315,211 @@ export class DbStorage {
     } else {
       const result = await db.insert(companyInfo).values(insertInfo).returning();
       return result[0];
+    }
+  }
+
+  // Daily Balances
+  async getDailyBalance(date: string): Promise<DailyBalance | undefined> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+    
+    const result = await db
+      .select()
+      .from(dailyBalances)
+      .where(and(
+        gte(dailyBalances.date, startOfDay),
+        lt(dailyBalances.date, endOfDay)
+      ))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async createOrUpdateDailyBalance(insertBalance: InsertDailyBalance): Promise<DailyBalance> {
+    const existing = await this.getDailyBalance(insertBalance.date.toISOString().split('T')[0]);
+    
+    if (existing) {
+      const result = await db
+        .update(dailyBalances)
+        .set({ ...insertBalance, updatedAt: new Date() })
+        .where(eq(dailyBalances.id, existing.id))
+        .returning();
+      return result[0];
+    } else {
+      const result = await db.insert(dailyBalances).values(insertBalance).returning();
+      return result[0];
+    }
+  }
+
+  async closeDailyBalance(date: string, closingBalance: number): Promise<DailyBalance | undefined> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+    
+    const result = await db
+      .update(dailyBalances)
+      .set({ 
+        closingBalance: closingBalance.toString(),
+        isClosed: true,
+        updatedAt: new Date()
+      })
+      .where(and(
+        gte(dailyBalances.date, startOfDay),
+        lt(dailyBalances.date, endOfDay)
+      ))
+      .returning();
+    
+    return result[0];
+  }
+
+  // Daily Inventory Snapshots
+  async getDailyInventorySnapshots(date: string): Promise<(DailyInventorySnapshot & { item: Item })[]> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+    
+    const result = await db
+      .select({
+        id: dailyInventorySnapshots.id,
+        date: dailyInventorySnapshots.date,
+        itemId: dailyInventorySnapshots.itemId,
+        openingStock: dailyInventorySnapshots.openingStock,
+        closingStock: dailyInventorySnapshots.closingStock,
+        isClosed: dailyInventorySnapshots.isClosed,
+        createdAt: dailyInventorySnapshots.createdAt,
+        updatedAt: dailyInventorySnapshots.updatedAt,
+        item: {
+          id: items.id,
+          name: items.name,
+          pricePerUnit: items.pricePerUnit,
+          category: items.category,
+          createdAt: items.createdAt
+        }
+      })
+      .from(dailyInventorySnapshots)
+      .leftJoin(items, eq(dailyInventorySnapshots.itemId, items.id))
+      .where(and(
+        gte(dailyInventorySnapshots.date, startOfDay),
+        lt(dailyInventorySnapshots.date, endOfDay)
+      ));
+    
+    return result as (DailyInventorySnapshot & { item: Item })[];
+  }
+
+  async createDailyInventorySnapshot(insertSnapshot: InsertDailyInventorySnapshot): Promise<DailyInventorySnapshot> {
+    const result = await db.insert(dailyInventorySnapshots).values(insertSnapshot).returning();
+    return result[0];
+  }
+
+  async closeDailyInventorySnapshot(date: string, itemId: string, closingStock: number): Promise<DailyInventorySnapshot | undefined> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+    
+    const result = await db
+      .update(dailyInventorySnapshots)
+      .set({ 
+        closingStock,
+        isClosed: true,
+        updatedAt: new Date()
+      })
+      .where(and(
+        eq(dailyInventorySnapshots.itemId, itemId),
+        gte(dailyInventorySnapshots.date, startOfDay),
+        lt(dailyInventorySnapshots.date, endOfDay)
+      ))
+      .returning();
+    
+    return result[0];
+  }
+
+  // Transaction Logs
+  async createTransactionLog(insertLog: InsertTransactionLog): Promise<TransactionLog> {
+    const result = await db.insert(transactionLogs).values(insertLog).returning();
+    return result[0];
+  }
+
+  async getTransactionLogs(date?: string): Promise<TransactionLog[]> {
+    if (date) {
+      const targetDate = new Date(date);
+      const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+      
+      return await db
+        .select()
+        .from(transactionLogs)
+        .where(and(
+          gte(transactionLogs.date, startOfDay),
+          lt(transactionLogs.date, endOfDay)
+        ))
+        .orderBy(desc(transactionLogs.createdAt));
+    }
+    
+    return await db
+      .select()
+      .from(transactionLogs)
+      .orderBy(desc(transactionLogs.createdAt));
+  }
+
+  // Delete operations
+  async deleteBorrower(id: string): Promise<boolean> {
+    const result = await db.delete(borrowers).where(eq(borrowers.id, id));
+    return result.rowCount > 0;
+  }
+
+  async deleteDepositor(id: string): Promise<boolean> {
+    const result = await db.delete(depositors).where(eq(depositors.id, id));
+    return result.rowCount > 0;
+  }
+
+  async deleteOnlinePayment(id: string): Promise<boolean> {
+    const result = await db.delete(onlinePayments).where(eq(onlinePayments.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Daily Reset
+  async resetDailyData(date: string): Promise<boolean> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const endOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
+    
+    try {
+      // Delete sales for the date
+      await db.delete(sales).where(and(
+        gte(sales.date, startOfDay),
+        lt(sales.date, endOfDay)
+      ));
+
+      // Delete expenses for the date
+      await db.delete(expenses).where(and(
+        gte(expenses.date, startOfDay),
+        lt(expenses.date, endOfDay)
+      ));
+
+      // Delete online payments for the date
+      await db.delete(onlinePayments).where(and(
+        gte(onlinePayments.date, startOfDay),
+        lt(onlinePayments.date, endOfDay)
+      ));
+
+      // Reset daily balance
+      await db
+        .update(dailyBalances)
+        .set({ 
+          closingBalance: null,
+          isClosed: false,
+          updatedAt: new Date()
+        })
+        .where(and(
+          gte(dailyBalances.date, startOfDay),
+          lt(dailyBalances.date, endOfDay)
+        ));
+
+      return true;
+    } catch (error) {
+      console.error('Error resetting daily data:', error);
+      return false;
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Receipt, Users, Building2, Smartphone, CreditCard } from "lucide-react";
+import { PlusCircle, Receipt, Users, Building2, Smartphone, CreditCard, Calendar } from "lucide-react";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
@@ -24,6 +24,7 @@ const moreItems = [
   { path: "/depositors", icon: Building2, label: "Depositors", color: "text-success" },
   { path: "/online-payments", icon: Smartphone, label: "Online Payments", color: "text-info" },
   { path: "/employees", icon: Users, label: "Employees", color: "text-secondary" },
+  { path: "/daily-inventory", icon: Calendar, label: "Daily Inventory", color: "text-info" },
   { path: "/company-info", icon: Building2, label: "Company Info", color: "text-primary" },
 ];
 

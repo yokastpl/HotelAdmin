@@ -45,6 +45,7 @@ CREATE TABLE borrowers (
     phone TEXT,
     amount_borrowed DECIMAL(10,2) NOT NULL,
     amount_repaid DECIMAL(10,2) DEFAULT 0,
+    previous_balance DECIMAL(10,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -105,4 +106,40 @@ CREATE TABLE company_info (
     gst_number TEXT,
     logo TEXT,
     updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Daily Balances table
+CREATE TABLE daily_balances (
+    id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+    date TIMESTAMP NOT NULL,
+    opening_balance DECIMAL(10,2) NOT NULL DEFAULT 0,
+    closing_balance DECIMAL(10,2),
+    is_closed BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Daily Inventory Snapshots table
+CREATE TABLE daily_inventory_snapshots (
+    id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+    date TIMESTAMP NOT NULL,
+    item_id VARCHAR REFERENCES items(id) NOT NULL,
+    opening_stock INTEGER NOT NULL DEFAULT 0,
+    closing_stock INTEGER,
+    is_closed BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Transaction Log table for audit trail
+CREATE TABLE transaction_logs (
+    id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+    date TIMESTAMP NOT NULL,
+    transaction_type TEXT NOT NULL,
+    transaction_id VARCHAR NOT NULL,
+    action TEXT NOT NULL,
+    amount DECIMAL(10,2),
+    description TEXT,
+    user_id VARCHAR,
+    created_at TIMESTAMP DEFAULT NOW()
 );

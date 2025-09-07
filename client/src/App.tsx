@@ -8,6 +8,7 @@ import AddItems from "@/pages/add-items";
 import Inventory from "@/pages/inventory";
 import Sales from "@/pages/sales";
 import DailyAccount from "@/pages/daily-account";
+import DailyInventory from "@/pages/daily-inventory";
 import Expenses from "@/pages/expenses";
 import Borrowers from "@/pages/borrowers";
 import Depositors from "@/pages/depositors";
@@ -29,6 +30,7 @@ function Router() {
           <Route path="/inventory" component={Inventory} />
           <Route path="/sales" component={Sales} />
           <Route path="/daily-account" component={DailyAccount} />
+          <Route path="/daily-inventory" component={DailyInventory} />
           <Route path="/expenses" component={Expenses} />
           <Route path="/borrowers" component={Borrowers} />
           <Route path="/depositors" component={Depositors} />

@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { api } from "@/lib/api";
-import { Building2, ArrowLeft } from "lucide-react";
+import { Building2, ArrowLeft, Trash2 } from "lucide-react";
 
 export default function Depositors() {
   const [formData, setFormData] = useState({
@@ -72,6 +72,25 @@ export default function Depositors() {
     },
   });
 
+  const deleteDepositorMutation = useMutation({
+    mutationFn: (id: string) => api.deleteDepositor(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/depositors"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/daily-account"] });
+      toast({
+        title: "Success",
+        description: "Depositor deleted successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete depositor. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.amount) {
@@ -109,6 +128,12 @@ export default function Depositors() {
       id: returnData.depositorId,
       amount: parseFloat(returnData.amount),
     });
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this depositor? This action cannot be undone.")) {
+      deleteDepositorMutation.mutate(id);
+    }
   };
 
   return (
@@ -224,22 +249,34 @@ export default function Depositors() {
                           </div>
                         </div>
                         <div className="text-end">
-                          {!depositor.returned && remainingAmount > 0 ? (
+                          <div className="d-flex gap-2">
+                            {!depositor.returned && remainingAmount > 0 ? (
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="border-success text-success"
+                                onClick={() => handleReturn(depositor.id, remainingAmount)}
+                                data-testid={`button-return-deposit-${depositor.id}`}
+                              >
+                                <ArrowLeft className="w-4 h-4 me-1" />
+                                Return
+                              </Button>
+                            ) : (
+                              <Badge variant="secondary" data-testid={`badge-depositor-returned-${depositor.id}`}>
+                                Returned
+                              </Badge>
+                            )}
                             <Button 
                               size="sm" 
                               variant="outline"
-                              className="border-success text-success"
-                              onClick={() => handleReturn(depositor.id, remainingAmount)}
-                              data-testid={`button-return-deposit-${depositor.id}`}
+                              className="text-danger border-danger"
+                              onClick={() => handleDelete(depositor.id)}
+                              disabled={deleteDepositorMutation.isPending}
+                              data-testid={`button-delete-depositor-${depositor.id}`}
                             >
-                              <ArrowLeft className="w-4 h-4 me-1" />
-                              Return
+                              <Trash2 className="w-4 h-4" />
                             </Button>
-                          ) : (
-                            <Badge variant="secondary" data-testid={`badge-depositor-returned-${depositor.id}`}>
-                              Returned
-                            </Badge>
-                          )}
+                          </div>
                         </div>
                       </div>
                     </CardContent>

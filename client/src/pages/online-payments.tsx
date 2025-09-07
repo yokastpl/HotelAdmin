@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { api } from "@/lib/api";
-import { Smartphone, List } from "lucide-react";
+import { Smartphone, List, Trash2 } from "lucide-react";
 
 export default function OnlinePayments() {
   const [formData, setFormData] = useState({
@@ -44,6 +44,25 @@ export default function OnlinePayments() {
     },
   });
 
+  const deletePaymentMutation = useMutation({
+    mutationFn: (id: string) => api.deleteOnlinePayment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/online-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/daily-account"] });
+      toast({
+        title: "Success",
+        description: "Online payment deleted successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete payment. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.amount) {
@@ -69,6 +88,12 @@ export default function OnlinePayments() {
       case "netbanking": return "Net Banking";
       case "wallet": return "Mobile Wallet";
       default: return method;
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this online payment? This action cannot be undone.")) {
+      deletePaymentMutation.mutate(id);
     }
   };
 
@@ -178,9 +203,21 @@ export default function OnlinePayments() {
                     </small>
                   </div>
                   <div className="text-end">
-                    <strong className="text-success" data-testid={`text-payment-amount-${payment.id}`}>
-                      ₹{parseFloat(payment.amount).toFixed(2)}
-                    </strong>
+                    <div className="d-flex align-items-center gap-2">
+                      <strong className="text-success" data-testid={`text-payment-amount-${payment.id}`}>
+                        ₹{parseFloat(payment.amount).toFixed(2)}
+                      </strong>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="text-danger border-danger"
+                        onClick={() => handleDelete(payment.id)}
+                        disabled={deletePaymentMutation.isPending}
+                        data-testid={`button-delete-payment-${payment.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}

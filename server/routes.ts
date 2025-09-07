@@ -179,6 +179,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/borrowers/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteBorrower(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Borrower not found" });
+      }
+      res.json({ message: "Borrower deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete borrower" });
+    }
+  });
+
   // Depositors routes
   app.get("/api/depositors", async (req, res) => {
     try {
@@ -213,6 +226,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/depositors/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteDepositor(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Depositor not found" });
+      }
+      res.json({ message: "Depositor deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete depositor" });
+    }
+  });
+
   // Online Payments routes
   app.get("/api/online-payments", async (req, res) => {
     try {
@@ -236,6 +262,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(payment);
     } catch (error) {
       res.status(400).json({ message: "Invalid payment data" });
+    }
+  });
+
+  app.delete("/api/online-payments/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteOnlinePayment(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Online payment not found" });
+      }
+      res.json({ message: "Online payment deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete online payment" });
     }
   });
 
@@ -337,29 +376,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { date } = req.query;
       const targetDate = date ? date as string : new Date().toISOString().split('T')[0];
       
-      const [sales, expenses, onlinePayments] = await Promise.all([
+      const [sales, expenses, onlinePayments, dailyBalance] = await Promise.all([
         storage.getSalesByDate(targetDate),
         storage.getExpensesByDate(targetDate),
-        storage.getOnlinePaymentsByDate(targetDate)
+        storage.getOnlinePaymentsByDate(targetDate),
+        storage.getDailyBalance(targetDate)
       ]);
 
       const totalSales = sales.reduce((sum, sale) => sum + parseFloat(sale.total), 0);
       const totalExpenses = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
       const totalOnlinePayments = onlinePayments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0);
+      const openingBalance = dailyBalance ? parseFloat(dailyBalance.openingBalance) : 0;
+      const closingBalance = dailyBalance?.closingBalance ? parseFloat(dailyBalance.closingBalance) : null;
       const netCash = totalSales - totalExpenses - totalOnlinePayments;
+      const currentBalance = openingBalance + netCash;
 
       res.json({
         date: targetDate,
+        openingBalance,
+        closingBalance,
+        currentBalance,
         totalSales,
         totalExpenses,
         totalOnlinePayments,
         netCash,
+        isClosed: dailyBalance?.isClosed || false,
         salesBreakdown: sales,
         expensesBreakdown: expenses,
         onlinePaymentsBreakdown: onlinePayments
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch daily account" });
+    }
+  });
+
+  // Daily balance routes
+  app.get("/api/daily-balances/:date", async (req, res) => {
+    try {
+      const { date } = req.params;
+      const balance = await storage.getDailyBalance(date);
+      res.json(balance);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch daily balance" });
+    }
+  });
+
+  app.post("/api/daily-balances", async (req, res) => {
+    try {
+      const { date, openingBalance } = req.body;
+      const balance = await storage.createOrUpdateDailyBalance({
+        date: new Date(date),
+        openingBalance: openingBalance.toString(),
+      });
+      res.json(balance);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid balance data" });
+    }
+  });
+
+  app.put("/api/daily-balances/:date/close", async (req, res) => {
+    try {
+      const { date } = req.params;
+      const { closingBalance } = req.body;
+      const balance = await storage.closeDailyBalance(date, closingBalance);
+      if (!balance) {
+        return res.status(404).json({ message: "Daily balance not found" });
+      }
+      res.json(balance);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid closing balance data" });
+    }
+  });
+
+  // Daily inventory snapshots routes
+  app.get("/api/daily-inventory/:date", async (req, res) => {
+    try {
+      const { date } = req.params;
+      const snapshots = await storage.getDailyInventorySnapshots(date);
+      res.json(snapshots);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch daily inventory" });
+    }
+  });
+
+  app.post("/api/daily-inventory", async (req, res) => {
+    try {
+      const { date, itemId, openingStock } = req.body;
+      const snapshot = await storage.createDailyInventorySnapshot({
+        date: new Date(date),
+        itemId,
+        openingStock,
+      });
+      res.json(snapshot);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid inventory snapshot data" });
+    }
+  });
+
+  app.put("/api/daily-inventory/:date/close", async (req, res) => {
+    try {
+      const { date } = req.params;
+      const { itemId, closingStock } = req.body;
+      const snapshot = await storage.closeDailyInventorySnapshot(date, itemId, closingStock);
+      if (!snapshot) {
+        return res.status(404).json({ message: "Inventory snapshot not found" });
+      }
+      res.json(snapshot);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid closing inventory data" });
+    }
+  });
+
+  // Daily reset route
+  app.post("/api/daily/reset", async (req, res) => {
+    try {
+      const { date } = req.body;
+      const targetDate = date || new Date().toISOString().split('T')[0];
+      const success = await storage.resetDailyData(targetDate);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to reset daily data" });
+      }
+      res.json({ message: "Daily data reset successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to reset daily data" });
     }
   });
 

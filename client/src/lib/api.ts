@@ -71,4 +71,24 @@ export const api = {
     const url = date ? `/api/daily-account?date=${date}` : "/api/daily-account";
     return fetch(url).then(res => res.json());
   },
+
+  // Daily Balances
+  getDailyBalance: (date: string) => fetch(`/api/daily-balances/${date}`).then(res => res.json()),
+  createDailyBalance: (data: any) => apiRequest("POST", "/api/daily-balances", data),
+  closeDailyBalance: (date: string, closingBalance: number) => 
+    apiRequest("PUT", `/api/daily-balances/${date}/close`, { closingBalance }),
+
+  // Daily Inventory
+  getDailyInventory: (date: string) => fetch(`/api/daily-inventory/${date}`).then(res => res.json()),
+  createDailyInventorySnapshot: (data: any) => apiRequest("POST", "/api/daily-inventory", data),
+  closeDailyInventorySnapshot: (date: string, itemId: string, closingStock: number) => 
+    apiRequest("PUT", `/api/daily-inventory/${date}/close`, { itemId, closingStock }),
+
+  // Daily Reset
+  resetDailyData: (date?: string) => apiRequest("POST", "/api/daily/reset", { date }),
+
+  // Delete operations
+  deleteBorrower: (id: string) => apiRequest("DELETE", `/api/borrowers/${id}`),
+  deleteDepositor: (id: string) => apiRequest("DELETE", `/api/depositors/${id}`),
+  deleteOnlinePayment: (id: string) => apiRequest("DELETE", `/api/online-payments/${id}`),
 };
