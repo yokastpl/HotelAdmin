@@ -232,10 +232,10 @@ export default function CompanyInfo() {
           <h5 className="mb-1" data-testid="text-preview-company-name">
             {formData.name || companyInfo?.name || "Your Hotel Name"}
           </h5>
-          <p className="text-muted mb-1" data-testid="text-preview-address">
+          <p className="text-dark mb-1" data-testid="text-preview-address">
             {formData.address || companyInfo?.address || "Your hotel address will appear here"}
           </p>
-          <p className="text-muted mb-0">
+          <p className="text-dark mb-0">
             <small data-testid="text-preview-contact">
               {(formData.phone || companyInfo?.phone) && (formData.email || companyInfo?.email) 
                 ? `${formData.phone || companyInfo?.phone} | ${formData.email || companyInfo?.email}`

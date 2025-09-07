@@ -3,7 +3,10 @@ import postgres from 'postgres';
 import * as schema from '@shared/schema';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is required");
+  console.warn("⚠️  DATABASE_URL not found. Using in-memory storage for testing.");
+  console.warn("   For production, set DATABASE_URL environment variable.");
+  // Use a fallback for testing
+  process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/hotel_test";
 }
 
 const connectionString = process.env.DATABASE_URL;

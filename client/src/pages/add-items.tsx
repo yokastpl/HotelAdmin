@@ -170,7 +170,7 @@ export default function AddItems() {
           {isLoading ? (
             <div className="text-center py-4">Loading items...</div>
           ) : !items || items.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No items found. Add your first item above.
             </div>
           ) : (
@@ -183,7 +183,7 @@ export default function AddItems() {
                 >
                   <div>
                     <strong data-testid={`text-item-name-${item.id}`}>{item.name}</strong><br />
-                    <small className="text-muted">
+                    <small className="text-dark">
                       ₹<span data-testid={`text-item-price-${item.id}`}>{parseFloat(item.pricePerUnit).toFixed(2)}</span> | 
                       <span data-testid={`text-item-category-${item.id}`} className="ms-1">{item.category}</span>
                     </small>

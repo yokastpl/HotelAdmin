@@ -190,7 +190,7 @@ export default function Depositors() {
           {isLoading ? (
             <div className="text-center py-4">Loading deposits...</div>
           ) : !depositors || depositors.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No deposits found.
             </div>
           ) : (
@@ -206,7 +206,7 @@ export default function Depositors() {
                             {depositor.name}
                           </h6>
                           {depositor.purpose && (
-                            <small className="text-muted" data-testid={`text-depositor-purpose-${depositor.id}`}>
+                            <small className="text-dark" data-testid={`text-depositor-purpose-${depositor.id}`}>
                               {depositor.purpose}
                             </small>
                           )}
@@ -218,7 +218,7 @@ export default function Depositors() {
                             >
                               ₹{parseFloat(depositor.amount).toFixed(2)} Deposited
                             </Badge>
-                            <small className="text-muted" data-testid={`text-depositor-date-${depositor.id}`}>
+                            <small className="text-dark" data-testid={`text-depositor-date-${depositor.id}`}>
                               {new Date(depositor.date).toLocaleDateString()}
                             </small>
                           </div>

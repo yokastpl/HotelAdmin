@@ -237,7 +237,7 @@ export default function Employees() {
           {isLoading ? (
             <div className="text-center py-4">Loading employees...</div>
           ) : !employees || employees.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No employees found. Add employees first.
             </div>
           ) : (
@@ -253,7 +253,7 @@ export default function Employees() {
                   >
                     <div>
                       <strong data-testid={`text-employee-name-${employee.id}`}>{employee.name}</strong><br />
-                      <small className="text-muted">
+                      <small className="text-dark">
                         {employee.position && (
                           <span data-testid={`text-employee-position-${employee.id}`}>{employee.position}</span>
                         )}
@@ -291,7 +291,7 @@ export default function Employees() {
         </CardHeader>
         <CardContent className="p-4">
           {!salaryPayments || salaryPayments.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No salary payments recorded.
             </div>
           ) : (
@@ -304,7 +304,7 @@ export default function Employees() {
                 >
                   <div>
                     <strong data-testid={`text-salary-employee-${payment.id}`}>{payment.employee.name}</strong><br />
-                    <small className="text-muted">
+                    <small className="text-dark">
                       <span data-testid={`text-salary-month-${payment.id}`}>{payment.month} {payment.year}</span>
                     </small>
                   </div>

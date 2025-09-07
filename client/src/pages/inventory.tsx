@@ -96,7 +96,7 @@ export default function Inventory() {
           {isLoading ? (
             <div className="text-center py-4">Loading inventory...</div>
           ) : !inventory || inventory.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No inventory items found. Add items first.
             </div>
           ) : (
@@ -107,7 +107,7 @@ export default function Inventory() {
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h6 className="mb-1" data-testid={`text-inventory-item-${item.id}`}>{item.item.name}</h6>
-                        <small className="text-muted">
+                        <small className="text-dark">
                           ₹<span data-testid={`text-inventory-price-${item.id}`}>{parseFloat(item.item.pricePerUnit).toFixed(2)}</span> per unit
                         </small>
                         <div className="mt-1 space-x-2">

@@ -114,7 +114,7 @@ export default function Expenses() {
             <div>
               <Label htmlFor="expenseAmount">Amount *</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">₹</span>
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-foreground">₹</span>
                 <Input
                   className="pl-8"
                   id="expenseAmount"
@@ -169,7 +169,7 @@ export default function Expenses() {
         </CardHeader>
         <CardContent className="p-4">
           {!todayExpenses || todayExpenses.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No expenses recorded today.
             </div>
           ) : (
@@ -182,7 +182,7 @@ export default function Expenses() {
                 >
                   <div>
                     <strong data-testid={`text-expense-description-${expense.id}`}>{expense.description}</strong><br />
-                    <small className="text-muted">
+                    <small className="text-dark">
                       <span data-testid={`text-expense-category-${expense.id}`}>{expense.category}</span> | 
                       <span data-testid={`text-expense-time-${expense.id}`} className="ms-1">
                         {new Date(expense.date).toLocaleTimeString()}

@@ -90,7 +90,7 @@ export default function DailyAccount() {
               </AccordionTrigger>
               <AccordionContent>
                 {!dailyAccount?.salesBreakdown || dailyAccount.salesBreakdown.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">No sales for this date</div>
+                  <div className="text-center py-4 text-dark-foreground">No sales for this date</div>
                 ) : (
                   <div className="space-y-2">
                     {dailyAccount.salesBreakdown.map((sale: any) => (
@@ -118,7 +118,7 @@ export default function DailyAccount() {
               </AccordionTrigger>
               <AccordionContent>
                 {!dailyAccount?.expensesBreakdown || dailyAccount.expensesBreakdown.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">No expenses for this date</div>
+                  <div className="text-center py-4 text-dark-foreground">No expenses for this date</div>
                 ) : (
                   <div className="space-y-2">
                     {dailyAccount.expensesBreakdown.map((expense: any) => (
@@ -144,7 +144,7 @@ export default function DailyAccount() {
               </AccordionTrigger>
               <AccordionContent>
                 {!dailyAccount?.onlinePaymentsBreakdown || dailyAccount.onlinePaymentsBreakdown.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">No online payments for this date</div>
+                  <div className="text-center py-4 text-dark-foreground">No online payments for this date</div>
                 ) : (
                   <div className="space-y-2">
                     {dailyAccount.onlinePaymentsBreakdown.map((payment: any) => (

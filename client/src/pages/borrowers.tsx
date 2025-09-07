@@ -190,7 +190,7 @@ export default function Borrowers() {
           {isLoading ? (
             <div className="text-center py-4">Loading borrowers...</div>
           ) : !borrowers || borrowers.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No borrowers found.
             </div>
           ) : (
@@ -206,7 +206,7 @@ export default function Borrowers() {
                             {borrower.name}
                           </h6>
                           {borrower.phone && (
-                            <small className="text-muted" data-testid={`text-borrower-phone-${borrower.id}`}>
+                            <small className="text-dark" data-testid={`text-borrower-phone-${borrower.id}`}>
                               {borrower.phone}
                             </small>
                           )}

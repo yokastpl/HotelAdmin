@@ -151,7 +151,7 @@ export default function OnlinePayments() {
         </CardHeader>
         <CardContent className="p-4">
           {!todayPayments || todayPayments.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No online payments recorded today.
             </div>
           ) : (
@@ -166,7 +166,7 @@ export default function OnlinePayments() {
                     <strong data-testid={`text-payment-method-${payment.id}`}>
                       {getMethodDisplayName(payment.method)}
                     </strong><br />
-                    <small className="text-muted">
+                    <small className="text-dark">
                       {payment.transactionRef && (
                         <>
                           Ref: <span data-testid={`text-payment-ref-${payment.id}`}>{payment.transactionRef}</span> | 

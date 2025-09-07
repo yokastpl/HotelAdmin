@@ -140,9 +140,9 @@ export default function Sales() {
                 />
               </div>
               <div>
-                <Label htmlFor="salePrice">Unit Price</Label>
+                <Label htmlFor="salePrice">Unit Price &nbsp; <span className="input-group-text">₹</span></Label>
                 <div className="input-group">
-                  <span className="input-group-text">₹</span>
+                  
                   <Input
                     id="salePrice"
                     type="number"
@@ -198,7 +198,7 @@ export default function Sales() {
         </CardHeader>
         <CardContent className="p-4">
           {!todaySales || todaySales.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
+            <div className="text-center py-4 text-dark-foreground">
               No sales recorded today.
             </div>
           ) : (
@@ -211,7 +211,7 @@ export default function Sales() {
                 >
                   <div>
                     <strong data-testid={`text-sale-item-${sale.id}`}>{sale.item.name}</strong><br />
-                    <small className="text-muted">
+                    <small className="text-dark">
                       Qty: <span data-testid={`text-sale-quantity-${sale.id}`}>{sale.quantity}</span> × 
                       ₹<span data-testid={`text-sale-unit-price-${sale.id}`}>{parseFloat(sale.unitPrice).toFixed(2)}</span> | 
                       <span data-testid={`text-sale-time-${sale.id}`}>{new Date(sale.date).toLocaleTimeString()}</span>

@@ -14,7 +14,7 @@ import {
   onlinePayments, employees, attendance, salaryPayments, companyInfo
 } from "@shared/schema";
 import { db } from "./database";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte, lt } from "drizzle-orm";
 
 export class DbStorage {
   // Items
@@ -87,16 +87,17 @@ export class DbStorage {
 
   async getSalesByDate(date: string): Promise<(Sale & { item: Item })[]> {
     const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(date);
-    endDate.setDate(endDate.getDate() + 1);
+    endDate.setHours(23, 59, 59, 999);
     
     return await db
       .select()
       .from(sales)
       .leftJoin(items, eq(sales.itemId, items.id))
       .where(and(
-        eq(sales.date, startDate),
-        eq(sales.date, endDate)
+        gte(sales.date, startDate),
+        lt(sales.date, endDate)
       ))
       .then(rows => rows.map(row => ({ ...row.sales, item: row.items! })));
   }
@@ -126,15 +127,16 @@ export class DbStorage {
 
   async getExpensesByDate(date: string): Promise<Expense[]> {
     const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(date);
-    endDate.setDate(endDate.getDate() + 1);
+    endDate.setHours(23, 59, 59, 999);
     
     return await db
       .select()
       .from(expenses)
       .where(and(
-        eq(expenses.date, startDate),
-        eq(expenses.date, endDate)
+        gte(expenses.date, startDate),
+        lt(expenses.date, endDate)
       ));
   }
 
@@ -199,15 +201,16 @@ export class DbStorage {
 
   async getOnlinePaymentsByDate(date: string): Promise<OnlinePayment[]> {
     const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(date);
-    endDate.setDate(endDate.getDate() + 1);
+    endDate.setHours(23, 59, 59, 999);
     
     return await db
       .select()
       .from(onlinePayments)
       .where(and(
-        eq(onlinePayments.date, startDate),
-        eq(onlinePayments.date, endDate)
+        gte(onlinePayments.date, startDate),
+        lt(onlinePayments.date, endDate)
       ));
   }
 
@@ -229,16 +232,17 @@ export class DbStorage {
   // Attendance
   async getAttendanceByDate(date: string): Promise<(Attendance & { employee: Employee })[]> {
     const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(date);
-    endDate.setDate(endDate.getDate() + 1);
+    endDate.setHours(23, 59, 59, 999);
     
     return await db
       .select()
       .from(attendance)
       .leftJoin(employees, eq(attendance.employeeId, employees.id))
       .where(and(
-        eq(attendance.date, startDate),
-        eq(attendance.date, endDate)
+        gte(attendance.date, startDate),
+        lt(attendance.date, endDate)
       ))
       .then(rows => rows.map(row => ({ ...row.attendance, employee: row.employees! })));
   }
