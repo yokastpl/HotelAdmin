@@ -32,8 +32,8 @@ export default function BottomNavigation() {
 
   return (
     <nav className="bottom-nav">
-      <div className="container-fluid">
-        <div className="d-flex">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex">
           {navItems.map((item) => (
             <div key={item.path} className="nav-item">
               <Link href={item.path}>
@@ -60,7 +60,7 @@ export default function BottomNavigation() {
                   {moreItems.map((item) => (
                     <Link key={item.path} href={item.path}>
                       <Button variant="ghost" className="w-full justify-start h-12" data-testid={`button-${item.label.toLowerCase().replace(/\s+/g, '-')}`}>
-                        <item.icon className={`w-5 h-5 me-3 ${item.color}`} />
+                        <item.icon className={`w-5 h-5 mr-3 ${item.color}`} />
                         {item.label}
                       </Button>
                     </Link>
