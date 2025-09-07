@@ -83,7 +83,7 @@ export default function Dashboard() {
           <CardContent className="p-4 space-y-3">
             {lowStockItems.map((item: any) => (
               <Alert key={item.id} className="low-stock-alert">
-                <AlertDescription className="d-flex justify-content-between align-items-center">
+                <AlertDescription className="flex justify-between items-center">
                   <div>
                     <strong data-testid={`text-item-${item.item.name.toLowerCase().replace(/\s+/g, '-')}`}>{item.item.name}</strong><br />
                     <small>Current Stock: <span data-testid={`text-stock-${item.id}`}>{item.currentStock}</span> units</small>

@@ -55,7 +55,7 @@ export default function DailyAccount() {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
             <div className="text-center p-3 bg-success text-white rounded">
               <h6 className="text-lg font-bold" data-testid="text-account-total-sales">
                 ₹{(dailyAccount?.totalSales || 0).toLocaleString()}
@@ -96,7 +96,7 @@ export default function DailyAccount() {
                     {dailyAccount.salesBreakdown.map((sale: any) => (
                       <div 
                         key={sale.id} 
-                        className="d-flex justify-content-between py-1"
+                        className="flex justify-between py-1"
                         data-testid={`breakdown-sale-${sale.id}`}
                       >
                         <span data-testid={`text-breakdown-sale-name-${sale.id}`}>{sale.item.name}</span>
@@ -124,7 +124,7 @@ export default function DailyAccount() {
                     {dailyAccount.expensesBreakdown.map((expense: any) => (
                       <div 
                         key={expense.id} 
-                        className="d-flex justify-content-between py-1"
+                        className="flex justify-between py-1"
                         data-testid={`breakdown-expense-${expense.id}`}
                       >
                         <span data-testid={`text-breakdown-expense-description-${expense.id}`}>{expense.description}</span>
@@ -150,7 +150,7 @@ export default function DailyAccount() {
                     {dailyAccount.onlinePaymentsBreakdown.map((payment: any) => (
                       <div 
                         key={payment.id} 
-                        className="d-flex justify-content-between py-1"
+                        className="flex justify-between py-1"
                         data-testid={`breakdown-payment-${payment.id}`}
                       >
                         <span data-testid={`text-breakdown-payment-method-${payment.id}`}>{payment.method}</span>

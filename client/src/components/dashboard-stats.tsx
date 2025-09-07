@@ -11,7 +11,7 @@ export default function DashboardStats({ totalSales, totalExpenses, netProfit }:
     <Card className="stat-card">
       <CardContent className="p-4">
         <h5 className="text-lg font-semibold mb-3 text-white">Today's Summary</h5>
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
           <div>
             <h4 className="text-xl font-bold text-white" data-testid="text-total-sales">₹{totalSales.toLocaleString()}</h4>
             <small className="text-white/80">Total Sales</small>

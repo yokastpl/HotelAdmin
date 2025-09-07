@@ -104,8 +104,8 @@ export default function Inventory() {
               {inventory.map((item: any) => (
                 <Card key={item.id} className="mb-2">
                   <CardContent className="p-3">
-                    <div className="d-flex justify-content-between align-items-start">
-                      <div className="flex-grow-1">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
                         <h6 className="mb-1" data-testid={`text-inventory-item-${item.id}`}>{item.item.name}</h6>
                         <small className="text-muted">
                           ₹<span data-testid={`text-inventory-price-${item.id}`}>{parseFloat(item.item.pricePerUnit).toFixed(2)}</span> per unit
@@ -122,7 +122,7 @@ export default function Inventory() {
                           </Badge>
                         </div>
                       </div>
-                      <div className="d-flex gap-1">
+                      <div className="flex gap-1">
                         <Button 
                           size="sm" 
                           className="bg-success text-white"
