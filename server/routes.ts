@@ -326,6 +326,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Health check route
+  app.get("/health", (req, res) => {
+    res.json({ status: "OK", timestamp: new Date().toISOString() });
+  });
+
   // Daily account summary route
   app.get("/api/daily-account", async (req, res) => {
     try {

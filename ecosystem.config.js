@@ -1,7 +1,8 @@
 export default {
   apps: [{
     name: 'hotel-management',
-    script: 'dist/index.js',
+    script: './dist/index.js',
+    cwd: '/var/www/hotel-management', // Update this path to your actual deployment path
     instances: 1,
     autorestart: true,
     watch: false,
@@ -11,8 +12,8 @@ export default {
       PORT: 5000,
       DATABASE_URL: 'postgresql://hotel_user:your_secure_password_here@localhost:5432/hotel_management'
     },
-    error_file: '/var/log/pm2/hotel-management-error.log',
-    out_file: '/var/log/pm2/hotel-management-out.log',
-    log_file: '/var/log/pm2/hotel-management.log'
+    error_file: './logs/hotel-management-error.log',
+    out_file: './logs/hotel-management-out.log',
+    log_file: './logs/hotel-management.log'
   }]
 };
