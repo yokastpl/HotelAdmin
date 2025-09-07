@@ -1,0 +1,69 @@
+🔄 New Functional Requirements
+
+Delete Functionality
+
+Add delete button for all record types:
+
+Expenses
+
+Borrowers
+
+Depositors
+
+Online payments
+
+Deletion should remove the record from the daily account and update balances accordingly.
+
+Borrower & Depositor Handling
+
+Returning Borrowed Money
+When money borrowed (expenses, borrower, online, deposited) is returned to the person, it should be deducted from the daily account.
+
+Deposited Money
+Deposits should be added to the daily account and reflected as cash in.
+
+Previous Borrower Amount
+
+A separate field for the borrower’s pre-existing balance (before the system started).
+
+This does not affect the daily account.
+
+When the borrower deposits against this old balance, it should reflect in the daily account as cash in.
+
+Daily Account History
+
+Ability to select a specific date and view the daily account for that day.
+
+The historical view is read-only (no edits allowed).
+
+Daily Reset
+
+A reset button for the current day that clears all today’s transactions and resets balances to the day’s start.
+
+🛠 Technical Adjustments Needed
+
+Database Changes
+
+Add a column for borrower_previous_balance (excluded from daily calculations).
+
+Introduce soft-delete or permanent delete handling in all tables (expenses, borrowers, depositors, online_payments).
+
+Add transaction log table to maintain history for daily accounts.
+
+API Changes
+
+Endpoints for:
+
+DELETE /expenses/:id, DELETE /borrowers/:id, DELETE /depositors/:id, DELETE /online/:id
+
+POST /daily/reset (to clear current day entries)
+
+GET /daily/:date (to fetch daily account snapshot)
+
+Frontend Changes
+
+Add delete buttons with confirmation dialogs.
+
+Add reset button for today’s account.
+
+Add date picker to view daily history in read-only mode.
