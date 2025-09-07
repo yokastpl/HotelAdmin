@@ -42,7 +42,7 @@ export default function Dashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <Link href="/sales">
               <Button className="w-full h-20 flex-col btn-hotel-primary" data-testid="button-new-sale">
                 <ShoppingCart className="w-6 h-6 mb-1" />
